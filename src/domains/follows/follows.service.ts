@@ -69,14 +69,14 @@ export class FollowsService {
     /*
      * Permet de récupérer la liste des comptes qui suivent un utilisateur
      */
-    findUserFollowers(userId: number) {
+    findUserFollowers(userId: string) {
         return this.findFollowersByUserId(userId);
     }
 
     /*
      * Permet de récupérer la liste des comptes qu'un utilisateur suit
      */
-    findUserFollowing(userId: number) {
+    findUserFollowing(userId: string) {
         return this.findFollowingByUserId(userId);
     }
 
@@ -107,7 +107,7 @@ export class FollowsService {
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
     // Vérifie si un utilisateur existe dans la table 'user'
-    private async checkUserExist(userId: number) {
+    private async checkUserExist(userId: string) {
         return await this.prisma.user.findUnique({
             where: { id: userId },
         });
@@ -118,14 +118,14 @@ export class FollowsService {
      * requête effectué dans la table 'follow'
      * Retourne uniquement leurs id et leurs pseudos
      */
-    private async findFollowersByUserId(userId: number) {
+    private async findFollowersByUserId(userId: string) {
         return this.prisma.follow.findMany({
             where: {
                 followingId: userId,
             },
             include: {
                 follower: {
-                    select: { id: true, pseudo: true, image: true  },
+                    select: { id: true, pseudo: true, profilePicture: true  },
                 },
             },
         });
@@ -136,14 +136,14 @@ export class FollowsService {
      * requête effectué dans la table 'follow'
      * Retourne uniquement leurs id et leurs pseudos
      */
-    private async findFollowingByUserId(userId: number) {
+    private async findFollowingByUserId(userId: string) {
         return this.prisma.follow.findMany({
             where: {
                 followerId: userId,
             },
             include: {
                 following: {
-                    select: { id: true, pseudo: true, image: true },
+                    select: { id: true, pseudo: true, profilePicture: true },
                 },
             },
         });

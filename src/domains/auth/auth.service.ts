@@ -24,14 +24,18 @@ export class AuthService {
         // Je créer une variable dans laquelle j'effectue une requête pour récupérer un utilisateur avec l'email saisie
         const existingUser = await this.prisma.user.findUnique({ where: { email: email } });
 
+        console.log("Email déjà existant:", existingUser)
+
         // Si un utilisateur avec le même email existe, je retour l'erreur
         if (existingUser) throw new BadRequestException("L'email est déjà utilisé");
 
-                // Je créer une variable dans laquelle j'effectue une requête pour récupérer un utilisateur avec l'email saisie
-                const existingPseudo = await this.prisma.user.findUnique({ where: { pseudo: pseudo } });
+        // Je créer une variable dans laquelle j'effectue une requête pour récupérer un utilisateur avec l'email saisie
+        const existingPseudo = await this.prisma.user.findUnique({ where: { pseudo: pseudo } });
 
-                // Si un utilisateur avec le même email existe, je retour l'erreur
-                if (existingPseudo) throw new BadRequestException("Le pseudo est déjà utilisé");
+        console.log("Pseudo déjà existant:", existingPseudo)
+
+        // Si un utilisateur avec le même email existe, je retour l'erreur
+        if (existingPseudo) throw new BadRequestException("Le pseudo est déjà utilisé");
 
         const hashedPassword = await hash(password, 10);
 
@@ -46,6 +50,8 @@ export class AuthService {
             }
         });
 
+        console.log("Utilisateur créé:", createdUser)
+
         // Stocker les informations dans le token
         const payload: UserTokenData = { id: createdUser.id, pseudo: createdUser.pseudo };
         
@@ -59,9 +65,13 @@ export class AuthService {
         const existingUser = await this.prisma.user.findUnique({ where: { email: loginDto.email } });
         if (!existingUser) throw new BadRequestException("L'email ne correspond à aucun compte")
 
+        console.log("utilisateur existant:", existingUser)
+
         // Vérifier le mot de passe est correcte
         const isPasswordValid = await compare(loginDto.password, existingUser.password);
         if (!isPasswordValid) throw new BadRequestException('Le mot de passe est incorrect');
+
+        console.log("mot de passe correct")
 
         // Stocker les informations dans le token
         const payload: UserTokenData = { id: existingUser.id, pseudo: existingUser.pseudo };

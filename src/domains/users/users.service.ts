@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserTokenData } from 'src/types/AuthUser';
-import { use } from 'passport';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +27,7 @@ export class UsersService {
             select: {
                 id: true,
                 pseudo: true,
-                image: true,
+                profilePicture: true,
                 following: {
                     where: {
                         followerId: userLog.id,
@@ -52,7 +51,7 @@ export class UsersService {
         const usersWithIsFollower = users.map((user) => ({
             id: user.id,
             pseudo: user.pseudo,
-            image: user.image,
+            profilePicture: user.profilePicture,
             isFollower: user.following.length > 0 || false,
             isFollowing: user.followers.length > 0 || false,
         }));
@@ -61,7 +60,7 @@ export class UsersService {
     }
 
     // Permet de récupérer un seul utilisateur
-    findOne(id: number) {
+    findOne(id: string) {
         return this.prisma.user.findUnique({ where: { id } });
     }
 
@@ -98,44 +97,44 @@ export class UsersService {
         //  Supprimer les participations aux événements organisés par l'utilisateur
         await this.prisma.eventParticipant.deleteMany({
             where: {
-                event: { organizerId: user.id },
+                event: { userId: user.id },
             },
         });
 
         //  Supprimer les participations de l'utilisateur
         await this.prisma.eventParticipant.deleteMany({
-            where: { participantId: user.id },
+            where: { userId: user.id },
         });
 
         //  Supprimer les messages envoyés par l'utilisateur
         await this.prisma.eventMessage.deleteMany({
-            where: { senderId: user.id },
+            where: { userId: user.id },
         });
 
         // Supprimer les messages liés aux événements organisés par l'utilisateur
         await this.prisma.eventMessage.deleteMany({
             where: {
-                event: { organizerId: user.id },
+                event: { userId: user.id },
             },
         });
 
         // Supprimer les invitations envoyées et reçues
         await this.prisma.eventInvitation.deleteMany({
             where: {
-                OR: [{ inviterId: user.id }, { inviteeId: user.id }],
+                OR: [{ invitedById: user.id }, { userId: user.id }],
             },
         });
 
         // Supprimer les invitations liées aux événements organisés par l'utilisateur
         await this.prisma.eventInvitation.deleteMany({
             where: {
-                event: { organizerId: user.id },
+                event: { userId: user.id },
             },
         });
 
         //  Supprimer les événements organisés par l'utilisateur
         await this.prisma.event.deleteMany({
-            where: { organizerId: user.id },
+            where: { userId: user.id },
         });
 
         //  Supprimer l'utilisateur après avoir tout nettoyé

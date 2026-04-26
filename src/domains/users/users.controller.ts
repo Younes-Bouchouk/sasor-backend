@@ -46,7 +46,7 @@ export class UsersController {
     // Voir un seul utilisateur
     @Get(':id')
     findOne(@Param('id') id: string) {
-        return this.usersService.findOne(+id);
+        return this.usersService.findOne(id);
     }
 
     // Mettre à jour les infos de mon compte

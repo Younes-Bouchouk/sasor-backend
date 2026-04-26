@@ -46,13 +46,13 @@ export class FollowsController {
     // Route pour consulter les comptes qui suivent un utilisateur
     @Get('/:userId/followers')
     findUserFollowers(@Param('userId') userId: string) {
-        return this.followsService.findUserFollowers(+userId);
+        return this.followsService.findUserFollowers(userId);
     }
 
     // Route pour consulter les comptes qu'un utilisateur suit
     @Get('/:userId/following')
     findUserFollowing(@Param('userId') userId: string) {
-        return this.followsService.findUserFollowing(+userId);
+        return this.followsService.findUserFollowing(userId);
     }
 
     // Route pour ne plus suivre un utilisateur

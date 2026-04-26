@@ -1,5 +1,5 @@
-import { EventVisibility } from '@prisma/client';
-import { IsInt, IsOptional, IsString, IsEnum, IsDate } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt, IsOptional, IsString, IsBoolean, IsDate } from 'class-validator';
 
 export class UpdateEventDto {
   @IsOptional()
@@ -11,8 +11,8 @@ export class UpdateEventDto {
   description?: string;
 
   @IsOptional()
-  @IsString()
-  sport?: string;
+  @IsInt()
+  sportId?: number;
 
   @IsOptional()
   @IsInt()
@@ -23,13 +23,14 @@ export class UpdateEventDto {
   location?: string;
 
   @IsOptional()
-  @IsEnum(['PUBLIC', 'PRIVATE', 'FRIENDS'])
-  visibility?: EventVisibility;
+  @IsBoolean()
+  isPrivate?: boolean;
 
   @IsOptional()
+  @Type(() => Date)
   @IsDate()
-  plannedAt?: Date;
-  
+  startAt?: Date;
+
   @IsString()
   @IsOptional()
   image?: string;

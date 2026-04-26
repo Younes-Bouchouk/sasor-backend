@@ -1,7 +1,7 @@
 import { Request } from "express"
 
 export type UserTokenData = {
-    id: number,
+    id: string,
     pseudo: string
 }
 

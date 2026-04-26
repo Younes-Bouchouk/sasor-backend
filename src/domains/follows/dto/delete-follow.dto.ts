@@ -1,7 +1,7 @@
-import { IsNotEmpty, IsNumber } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
 
-export class DeleteFollowDto{
-    @IsNumber()
+export class DeleteFollowDto {
+    @IsString()
     @IsNotEmpty({ message: "L'id du follow ne doit pas être vide" })
-    followingId:number
+    followingId!: string
 }

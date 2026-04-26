@@ -25,13 +25,16 @@ export class AuthController {
 
     @Post('register')
     async register(@Body() registerDto: RegisterDto) {
-        console.log("Route pour créer un compte")
+        console.log("Route /auth/register")
+        console.log("Dto:", registerDto)
         return await this.authService.register(registerDto);
     }
 
     @Post('login')
     async login(@Body() loginDto: LoginDto) {
-        return await this.authService.login(loginDto);
+      console.log("Route /auth/login")
+      console.log("Dto:", loginDto)
+      return await this.authService.login(loginDto);
     }
 
     @Delete('logout')

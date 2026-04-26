@@ -1,6 +1,5 @@
-import { EventVisibility } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString, IsEnum, IsDate } from 'class-validator';
+import { IsInt, IsOptional, IsString, IsBoolean, IsDate } from 'class-validator';
 
 export class CreateEventDto {
   @IsString()
@@ -10,8 +9,8 @@ export class CreateEventDto {
   @IsString()
   description?: string;
 
-  @IsString()
-  sport: string;
+  @IsInt()
+  sportId: number;
 
   @IsInt()
   maxParticipants: number;
@@ -20,14 +19,14 @@ export class CreateEventDto {
   location: string;
 
   @IsOptional()
-  @IsEnum(['PUBLIC', 'PRIVATE', 'FRIENDS'])
-  visibility?: EventVisibility = 'PUBLIC';
+  @IsBoolean()
+  isPrivate?: boolean = false;
 
   @Type(() => Date)
   @IsDate({ message: "La date de l'event doit être au format ISO-8601" })
-  plannedAt: Date;
+  startAt: Date;
 
   @IsString()
   @IsOptional()
-  image?: string; 
+  image?: string;
 }
