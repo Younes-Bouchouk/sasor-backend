@@ -37,9 +37,12 @@ export class EventService {
             },
             include: {
                 participants: {
-                    where: {
-                        userId,
-                    },
+                    include: {
+                      participant: true
+                    }
+                    // where: {
+                    //     userId,
+                    // },
                 },
                 sport: {
                   select: {
