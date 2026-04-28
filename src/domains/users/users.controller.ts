@@ -27,7 +27,7 @@ export class UsersController {
         return await this.usersService.searchByPseudo(query, req.user);
     }
 
-    //return this.usersService.findAll();
+    return this.usersService.findAll();
     }
 
     // Parcourir les utilisateurs
