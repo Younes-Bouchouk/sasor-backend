@@ -41,13 +41,25 @@ export class EventService {
                         userId,
                     },
                 },
+                sport: {
+                  select: {
+                    name: true
+                  }
+                }
             },
         });
     }
 
     async getUserEvents(userId: string) {
         return await this.prisma.event.findMany({
-            where: { userId },
+          where: { userId },
+          include: {
+            sport: {
+              select: {
+                name: true
+              }
+            }
+          },
         });
     }
 
@@ -93,7 +105,14 @@ export class EventService {
 
     async getEventById(eventId: number) {
         return await this.prisma.event.findUnique({
-            where: { id: Number(eventId) },
+          where: { id: Number(eventId) },
+          include: {
+            sport: {
+              select: {
+                name: true
+              }
+            }
+          },
         });
     }
 

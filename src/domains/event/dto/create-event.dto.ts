@@ -3,20 +3,20 @@ import { IsInt, IsOptional, IsString, IsBoolean, IsDate } from 'class-validator'
 
 export class CreateEventDto {
   @IsString()
-  name: string;
+  "name": string;
 
   @IsOptional()
   @IsString()
   description?: string;
 
   @IsInt()
-  sportId: number;
+  "sportId": number;
 
   @IsInt()
-  maxParticipants: number;
+  "maxParticipants": number;
 
   @IsString()
-  location: string;
+  "location": string;
 
   @IsOptional()
   @IsBoolean()
@@ -24,7 +24,7 @@ export class CreateEventDto {
 
   @Type(() => Date)
   @IsDate({ message: "La date de l'event doit être au format ISO-8601" })
-  startAt: Date;
+  "startAt": Date;
 
   @IsString()
   @IsOptional()
