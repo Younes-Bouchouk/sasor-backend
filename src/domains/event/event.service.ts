@@ -38,11 +38,15 @@ export class EventService {
             include: {
                 participants: {
                     include: {
-                      participant: true
-                    }
-                    // where: {
-                    //     userId,
-                    // },
+                      participant: true,
+                    },
+                },
+                organizer: {
+                  select: {
+                    id: true,
+                    pseudo: true,
+                    profilePicture: true,
+                  }
                 },
                 sport: {
                   select: {
@@ -110,6 +114,12 @@ export class EventService {
         return await this.prisma.event.findUnique({
           where: { id: Number(eventId) },
           include: {
+            organizer: {
+              select: {
+                id: true,
+                pseudo: true  
+              }
+            },
             sport: {
               select: {
                 name: true

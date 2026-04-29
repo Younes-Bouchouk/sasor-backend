@@ -37,7 +37,6 @@ export class UsersController {
         return this.usersService.findMe(req.user);
     }
 
-    
     // Voir un seul utilisateur
     @Get(':id')
     findOne(@Param('id') id: string) {
