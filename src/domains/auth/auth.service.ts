@@ -14,10 +14,7 @@ export class AuthService {
     ) {}
     
     async register(registerDto: RegisterDto) {
-        const { pseudo, email, password, confirmPassword, birthday } =
-            registerDto;
-
-        if (password !== confirmPassword) throw new BadRequestException('Les mots de passe sont différents');
+        const { pseudo, email, password, birthday } = registerDto;
 
         const existingUser = await this.prisma.user.findUnique({ where: { email: email } });
 
