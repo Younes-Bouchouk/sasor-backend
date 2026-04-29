@@ -31,16 +31,16 @@ export class EventController {
         return this.eventService.getAllEvents(req.user.id);
     }
 
-    // @UseGuards(JwtAuthGuard)
-    // @Get('me')
-    // getMyEvents(@Req() req) {
-    //     return this.eventService.getUserEvents(req.user.id);
-    // }
-
     @UseGuards(JwtAuthGuard)
     @Get('me')
     getJoinedEvents(@Req() req: AuthenticatedRequest) {
         return this.eventService.getJoinedEvents(req.user.id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('organized')
+    getOrganizedEvents(@Req() req: AuthenticatedRequest) {
+      return this.eventService.getOrganizedEvents(req.user.id);
     }
 
     @UseGuards(JwtAuthGuard)

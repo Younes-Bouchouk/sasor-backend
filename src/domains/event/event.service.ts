@@ -38,35 +38,35 @@ export class EventService {
             include: {
                 participants: {
                     include: {
-                      participant: true,
+                        participant: true,
                     },
                 },
                 organizer: {
-                  select: {
-                    id: true,
-                    pseudo: true,
-                    profilePicture: true,
-                  }
+                    select: {
+                        id: true,
+                        pseudo: true,
+                        profilePicture: true,
+                    },
                 },
                 sport: {
-                  select: {
-                    name: true
-                  }
-                }
+                    select: {
+                        name: true,
+                    },
+                },
             },
         });
     }
 
     async getUserEvents(userId: string) {
         return await this.prisma.event.findMany({
-          where: { userId },
-          include: {
-            sport: {
-              select: {
-                name: true
-              }
-            }
-          },
+            where: { userId },
+            include: {
+                sport: {
+                    select: {
+                        name: true,
+                    },
+                },
+            },
         });
     }
 
@@ -74,23 +74,34 @@ export class EventService {
         const participations = await this.prisma.eventParticipant.findMany({
             where: { userId },
             include: {
-            event: {
-              include: {
-                participants: {
-                  include: {
-                    participant: true,
-                  },
+                event: {
+                    include: {
+                        participants: {
+                            include: {
+                                participant: true,
+                            },
+                        },
+                        organizer: true,
+                    },
                 },
-                organizer: true,
-              },
             },
-          },    
         });
 
         return participations.map((p) => ({
             ...p.event,
             isOrganizer: p.userId == p.event.userId,
         }));
+    }
+
+    async getOrganizedEvents(userId: string) {
+      return this.prisma.event.findMany({
+        where: { userId },
+        include: {
+          participants: { include: { participant: true } },
+          organizer: true,
+          sport: true,
+        },
+      });
     }
 
     async getFollowersEvents(userId: string) {
@@ -121,25 +132,25 @@ export class EventService {
 
     async getEventById(eventId: number) {
         return await this.prisma.event.findUnique({
-          where: { id: Number(eventId) },
-          include: {
-            participants: {
-              include: {
-                participant: true,
-              },
+            where: { id: Number(eventId) },
+            include: {
+                participants: {
+                    include: {
+                        participant: true,
+                    },
+                },
+                organizer: {
+                    select: {
+                        id: true,
+                        pseudo: true,
+                    },
+                },
+                sport: {
+                    select: {
+                        name: true,
+                    },
+                },
             },
-            organizer: {
-              select: {
-                id: true,
-                pseudo: true  
-              }
-            },
-            sport: {
-              select: {
-                name: true
-              }
-            }
-          },
         });
     }
 
@@ -226,15 +237,17 @@ export class EventService {
         participantsCount: number,
     ): string | null {
         if (maxParticipants <= participantsCount) {
-            return 'L\'événement est complet.';
+            return "L'événement est complet.";
         }
         return null;
     }
 
     async leaveEvent(userId: string, eventId: number) {
-        const deleteParticipant = await this.prisma.eventParticipant.deleteMany({
-            where: { userId, eventId: Number(eventId) },
-        });
+        const deleteParticipant = await this.prisma.eventParticipant.deleteMany(
+            {
+                where: { userId, eventId: Number(eventId) },
+            },
+        );
         if (deleteParticipant.count == 1) {
             return "vous avez bien quitté l'événement";
         }
