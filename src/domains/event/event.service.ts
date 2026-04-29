@@ -72,36 +72,32 @@ export class EventService {
 
     async getJoinedEvents(userId: string) {
         const participations = await this.prisma.eventParticipant.findMany({
-            where: { userId },
+            where: {
+                userId,
+                NOT: { event: { userId } },
+            },
             include: {
                 event: {
                     include: {
-                        participants: {
-                            include: {
-                                participant: true,
-                            },
-                        },
+                        participants: { include: { participant: true } },
                         organizer: true,
                     },
                 },
             },
         });
 
-        return participations.map((p) => ({
-            ...p.event,
-            isOrganizer: p.userId == p.event.userId,
-        }));
+        return participations.map((p) => p.event);
     }
 
     async getOrganizedEvents(userId: string) {
-      return this.prisma.event.findMany({
-        where: { userId },
-        include: {
-          participants: { include: { participant: true } },
-          organizer: true,
-          sport: true,
-        },
-      });
+        return this.prisma.event.findMany({
+            where: { userId },
+            include: {
+                participants: { include: { participant: true } },
+                organizer: true,
+                sport: true,
+            },
+        });
     }
 
     async getFollowersEvents(userId: string) {
