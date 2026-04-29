@@ -13,8 +13,8 @@ import { SportsModule } from './domains/sports/sports.module';
 
 @Module({
     imports: [
-       ConfigModule.forRoot({
-            isGlobal: true
+      ConfigModule.forRoot({
+          isGlobal: true
         }),
         UsersModule, 
         FollowsModule,
