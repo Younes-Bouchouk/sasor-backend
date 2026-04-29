@@ -75,6 +75,7 @@ export class EventService {
             where: { userId },
             include: {
                 event: true,
+                participant: true,
             },
         });
 
