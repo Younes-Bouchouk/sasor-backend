@@ -74,9 +74,17 @@ export class EventService {
         const participations = await this.prisma.eventParticipant.findMany({
             where: { userId },
             include: {
-                event: true,
-                participant: true,
+            event: {
+              include: {
+                participants: {
+                  include: {
+                    participant: true,
+                  },
+                },
+                organizer: true,
+              },
             },
+          },    
         });
 
         return participations.map((p) => ({
