@@ -79,8 +79,9 @@ export class EventService {
             include: {
                 event: {
                     include: {
-                        participants: { include: { participant: true } },
+                        participants: { include: { participant: true } }, // tous les participants
                         organizer: true,
+                        sport: true,
                     },
                 },
             },
@@ -110,14 +111,14 @@ export class EventService {
 
         if (followingIds.length === 0) return [];
 
-        return this.prisma.event.findMany({
+        return await this.prisma.event.findMany({
             where: {
                 userId: { in: followingIds },
                 isPrivate: false,
             },
             orderBy: { startAt: 'asc' },
             include: {
-                participants: { include: { participant: true } },
+                participants: { include: { participant: true } }, // tous les participants
                 organizer: true,
                 sport: true,
             },
