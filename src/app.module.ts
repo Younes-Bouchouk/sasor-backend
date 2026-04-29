@@ -9,6 +9,7 @@ import { EventsMessagesModule } from './domains/events-messages/events-messages.
 import { EventsInvitationsModule } from './domains/events-invitations/events-invitations.module';
 import { SearchModule } from './search/search.module';
 import { PaymentsModule } from './domains/payments/payments.module';
+import { SportsModule } from './domains/sports/sports.module';
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { PaymentsModule } from './domains/payments/payments.module';
         FollowsModule,
         AuthModule,
         EventModule,
+        SportsModule,
         EventsMessagesModule,
         EventsInvitationsModule,
         SearchModule,
