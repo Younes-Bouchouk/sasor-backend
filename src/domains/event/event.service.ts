@@ -108,20 +108,18 @@ export class EventService {
 
         const followingIds = following.map((f) => f.followingId);
 
-        if (followingIds.length === 0) {
-            return [];
-        }
+        if (followingIds.length === 0) return [];
 
-        return await this.prisma.event.findMany({
+        return this.prisma.event.findMany({
             where: {
                 userId: { in: followingIds },
                 isPrivate: false,
             },
-            orderBy: { startAt: 'desc' },
+            orderBy: { startAt: 'asc' },
             include: {
-                participants: {
-                    where: { userId },
-                },
+                participants: { include: { participant: true } },
+                organizer: true,
+                sport: true,
             },
         });
     }
