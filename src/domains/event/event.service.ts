@@ -165,14 +165,27 @@ export class EventService {
     async joinEvent(userId: string, eventId: number) {
         const event = await this.prisma.event.findUnique({
             where: { id: Number(eventId) },
-            select: { isPrivate: true },
+            select: { isPrivate: true, maxParticipants: true },
+        });
+
+        const participantsCount = await this.prisma.eventParticipant.count({
+            where: { eventId: Number(eventId) },
         });
 
         if (!event) {
             return 'Événement introuvable.';
         }
 
+        const fullMessage = this.joinEventFullMessage(
+            event.maxParticipants,
+            participantsCount,
+        );
+
         if (!event.isPrivate) {
+            if (fullMessage) {
+                return fullMessage;
+            }
+
             return await this.prisma.eventParticipant.create({
                 data: { userId, eventId: Number(eventId) },
             });
@@ -190,9 +203,23 @@ export class EventService {
             return "Vous ne pouvez rejoindre cet événement que si vous êtes invité et que l'invitation a été acceptée.";
         }
 
+        if (fullMessage) {
+            return fullMessage;
+        }
+
         return await this.prisma.eventParticipant.create({
             data: { userId, eventId },
         });
+    }
+
+    private joinEventFullMessage(
+        maxParticipants: number,
+        participantsCount: number,
+    ): string | null {
+        if (maxParticipants <= participantsCount) {
+            return 'L\'événement est complet.';
+        }
+        return null;
     }
 
     async leaveEvent(userId: string, eventId: number) {
