@@ -114,6 +114,11 @@ export class EventService {
         return await this.prisma.event.findUnique({
           where: { id: Number(eventId) },
           include: {
+            participants: {
+              include: {
+                participant: true,
+              },
+            },
             organizer: {
               select: {
                 id: true,
