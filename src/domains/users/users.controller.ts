@@ -50,7 +50,6 @@ export class UsersController {
     }
 
 
-
     // Mettre à jour les infos de mon compte
     @UseGuards(JwtAuthGuard)
     @Patch('me')
