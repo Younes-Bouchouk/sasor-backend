@@ -30,6 +30,14 @@ export class UsersController {
     return this.usersService.findAll();
     }
 
+    // Voir mon compte
+    @UseGuards(JwtAuthGuard)
+    @Get('me')
+    findMe(@Req() req: AuthenticatedRequest) {
+        return this.usersService.findMe(req.user);
+    }
+
+    
     // Voir un seul utilisateur
     @Get(':id')
     findOne(@Param('id') id: string) {
@@ -40,13 +48,6 @@ export class UsersController {
     @Get()
     findAll() { 
         return this.usersService.findAll();
-    }
-
-    // Voir mon compte
-    @UseGuards(JwtAuthGuard)
-    @Get('me')
-    findMe(@Req() req: AuthenticatedRequest) {
-        return this.usersService.findMe(req.user);
     }
 
 
