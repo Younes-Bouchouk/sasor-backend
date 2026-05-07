@@ -8,32 +8,47 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class EventsMessagesService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async send(
-        user: UserTokenData,
-        eventId: number,
-        createEventsMessageDto: CreateEventsMessageDto,
-    ) {
-        const existingEvent = await this.checkEventExist(eventId);
-        if (!existingEvent)
-            throw new BadRequestException("L'event n'est plus disponible");
+    // events-messages.service.ts
+async send(
+  user: UserTokenData,
+  eventId: number,
+  createEventsMessageDto: CreateEventsMessageDto,
+) {
+  const existingEvent = await this.checkEventExist(eventId);
+  if (!existingEvent)
+    throw new BadRequestException("L'event n'est plus disponible");
 
-        const isParticipant = await this.checkEventParticipation(
-            eventId,
-            user.id,
-        );
-        if (!isParticipant)
-            throw new BadRequestException('Vous ne partcipez pas à cet event');
+  const isParticipant = await this.checkEventParticipation(eventId, user.id);
+  if (!isParticipant)
+    throw new BadRequestException('Vous ne partcipez pas à cet event');
 
-        await this.prisma.eventMessage.create({
-            data: {
-                userId: user.id,
-                eventId,
-                message: createEventsMessageDto.message,
-            },
-        });
+  //  Récupérer le message créé avec les infos de l'utilisateur
+  const newMessage = await this.prisma.eventMessage.create({
+    data: {
+      userId: user.id,
+      eventId,
+      message: createEventsMessageDto.message,
+    },
+    include: {
+      sender: {
+        select: {
+          pseudo: true,
+          profilePicture: true,
+        },
+      },
+    },
+  });
 
-        return 'Message envoyé avec succès';
-    }
+  //  Retourner l'objet complet, pas un simple texte
+  return {
+    id: newMessage.id,
+    userId: newMessage.userId,
+    eventId: newMessage.eventId,
+    message: newMessage.message,
+    createdAt: newMessage.createdAt,
+    sender: newMessage.sender,
+  };
+}
 
     async findAll(user: UserTokenData, eventId: number) {
         await this.checkEventExist(eventId);
